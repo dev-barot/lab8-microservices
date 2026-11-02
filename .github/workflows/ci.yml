@@ -1,0 +1,127 @@
+name: CI/CD Pipeline - Lab 8 Microservices
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  lint-and-test:
+    name: Build & Test Microservices
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Test API Gateway
+        working-directory: ./api-gateway
+        run: |
+          npm install
+          npm test
+
+      - name: Test User Service
+        working-directory: ./user-service
+        run: |
+          npm install
+          npm test
+
+      - name: Test Product Service
+        working-directory: ./product-service
+        run: |
+          npm install
+          npm test
+
+      - name: Test Order Service
+        working-directory: ./order-service
+        run: |
+          npm install
+          npm test
+
+  build-and-push:
+    name: Build & Push Versioned Docker Images
+    needs: lint-and-test
+    runs-on: ubuntu-latest
+
+    env:
+      REGISTRY_USER: ${{ secrets.DOCKERHUB_USERNAME || 'devbarot' }}
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Log in to Docker Hub (if secrets configured)
+        if: "${{ env.DOCKERHUB_USERNAME != '' && secrets.DOCKERHUB_TOKEN != '' }}"
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+
+      - name: Build & Tag API Gateway Image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./api-gateway
+          push: ${{ env.DOCKERHUB_USERNAME != '' && secrets.DOCKERHUB_TOKEN != '' }}
+          tags: |
+            ${{ env.REGISTRY_USER }}/api-gateway:${{ github.sha }}
+            ${{ env.REGISTRY_USER }}/api-gateway:latest
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+
+      - name: Build & Tag User Service Image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./user-service
+          push: ${{ env.DOCKERHUB_USERNAME != '' && secrets.DOCKERHUB_TOKEN != '' }}
+          tags: |
+            ${{ env.REGISTRY_USER }}/user-service:${{ github.sha }}
+            ${{ env.REGISTRY_USER }}/user-service:latest
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+
+      - name: Build & Tag Product Service Image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./product-service
+          push: ${{ env.DOCKERHUB_USERNAME != '' && secrets.DOCKERHUB_TOKEN != '' }}
+          tags: |
+            ${{ env.REGISTRY_USER }}/product-service:${{ github.sha }}
+            ${{ env.REGISTRY_USER }}/product-service:latest
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+
+      - name: Build & Tag Order Service Image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./order-service
+          push: ${{ env.DOCKERHUB_USERNAME != '' && secrets.DOCKERHUB_TOKEN != '' }}
+          tags: |
+            ${{ env.REGISTRY_USER }}/order-service:${{ github.sha }}
+            ${{ env.REGISTRY_USER }}/order-service:latest
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+
+      - name: Verification Summary
+        run: |
+          echo "=========================================================="
+          echo "CI/CD Pipeline Completed Successfully!"
+          echo "Commit SHA: ${{ github.sha }}"
+          echo "Docker Image Version: ${{ github.sha }}"
+          echo "Images Processed:"
+          echo " - ${{ env.REGISTRY_USER }}/api-gateway:${{ github.sha }}"
+          echo " - ${{ env.REGISTRY_USER }}/user-service:${{ github.sha }}"
+          echo " - ${{ env.REGISTRY_USER }}/product-service:${{ github.sha }}"
+          echo " - ${{ env.REGISTRY_USER }}/order-service:${{ github.sha }}"
+          echo "=========================================================="
+

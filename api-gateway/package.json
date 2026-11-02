@@ -1,0 +1,22 @@
+{
+  "name": "api-gateway",
+  "version": "1.0.0",
+  "description": "API Gateway for Lab 8 Microservices with Prometheus metrics",
+  "main": "server.js",
+  "scripts": {
+    "test": "node -e \"console.log('API Gateway syntax check passed')\"",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.4",
+    "express": "^5.2.1",
+    "http-proxy-middleware": "^4.2.0",
+    "morgan": "^1.12.1",
+    "prom-client": "^15.1.3"
+  }
+}

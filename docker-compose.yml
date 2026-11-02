@@ -1,0 +1,71 @@
+services:
+  mongodb:
+    image: mongo
+    container_name: mongodb
+    # Note: Port 27017 is not exposed externally to satisfy the requirement
+    # that only the gateway's port is exposed externally. MongoDB is reachable
+    # internally by microservices on the 'campus-network'.
+    # ports:
+    #   - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - campus-network
+
+  user-service:
+    build: ./user-service
+    container_name: user-service
+    environment:
+      PORT: 3001
+      MONGO_URI: mongodb://mongodb:27017/user_db
+    depends_on:
+      - mongodb
+    networks:
+      - campus-network
+
+  product-service:
+    build: ./product-service
+    container_name: product-service
+    environment:
+      PORT: 3002
+      MONGO_URI: mongodb://mongodb:27017/product_db
+    depends_on:
+      - mongodb
+    networks:
+      - campus-network
+
+  order-service:
+    build: ./order-service
+    container_name: order-service
+    environment:
+      PORT: 3003
+      MONGO_URI: mongodb://mongodb:27017/order_db
+      USER_SERVICE_URL: http://user-service:3001
+      PRODUCT_SERVICE_URL: http://product-service:3002
+    depends_on:
+      - mongodb
+    networks:
+      - campus-network
+
+  api-gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    environment:
+      USER_SERVICE_URL: http://user-service:3001
+      PRODUCT_SERVICE_URL: http://product-service:3002
+      ORDER_SERVICE_URL: http://order-service:3003
+    depends_on:
+      - user-service
+      - product-service
+      - order-service
+    networks:
+      - campus-network
+
+networks:
+  campus-network:
+    name: campus-network
+
+volumes:
+  mongodb_data:

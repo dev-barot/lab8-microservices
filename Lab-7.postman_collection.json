@@ -1,0 +1,186 @@
+{
+	"info": {
+		"_postman_id": "lab7-microservices-api-gateway",
+		"name": "Lab 7 - API Gateway & Cloud Deployment",
+		"description": "Collection of requests testing API Gateway routing, health check, 503 resilience, and cloud deployment on Railway.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Local Gateway - GET Health Check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/health",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "8080",
+					"path": ["health"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2. Local Gateway - GET All Users",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/users",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "8080",
+					"path": ["users"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3. Local Gateway - POST New User",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Dev Barot\",\n  \"email\": \"devbarot@gmail.com\",\n  \"role\": \"student\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/users",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "8080",
+					"path": ["users"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "4. Local Gateway - GET All Products",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/products",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "8080",
+					"path": ["products"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5. Local Gateway - POST New Product",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Wireless Mouse\",\n  \"price\": 29.99,\n  \"category\": \"Electronics\"\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/products",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "8080",
+					"path": ["products"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "6. Local Gateway - GET All Orders",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/orders",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "8080",
+					"path": ["orders"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "7. Local Gateway - POST New Order (Validated)",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"userId\": \"<REPLACE_WITH_VALID_USER_ID>\",\n  \"productId\": \"<REPLACE_WITH_VALID_PRODUCT_ID>\",\n  \"quantity\": 2\n}"
+				},
+				"url": {
+					"raw": "http://localhost:8080/orders",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "8080",
+					"path": ["orders"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "8. Gateway Failure Test - 503 Unreachable User Service",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8080/users",
+					"protocol": "http",
+					"host": ["localhost"],
+					"port": "8080",
+					"path": ["users"]
+				},
+				"description": "Send after running 'docker stop user-service'. Gateway must respond with 503 Service Unavailable without crashing."
+			},
+			"response": []
+		},
+		{
+			"name": "9. Cloud Gateway - GET Health Check (Railway)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://lab7-microservices-production.up.railway.app/health",
+					"protocol": "https",
+					"host": ["lab7-microservices-production", "up", "railway", "app"],
+					"path": ["health"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "10. Cloud Gateway - GET All Users (Railway)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://lab7-microservices-production.up.railway.app/users",
+					"protocol": "https",
+					"host": ["lab7-microservices-production", "up", "railway", "app"],
+					"path": ["users"]
+				}
+			},
+			"response": []
+		}
+	]
+}

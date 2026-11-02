@@ -1,0 +1,147 @@
+{
+	"info": {
+		"_postman_id": "lab8-microservices-k8s-prometheus",
+		"name": "Lab 8 - Kubernetes, CI/CD & Monitoring",
+		"description": "Collection of requests testing Kubernetes-deployed API Gateway, health probes, Prometheus metrics, and traffic generation for Grafana.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Gateway - GET Health Check (K8s Probe)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{GATEWAY_URL}}/health",
+					"host": ["{{GATEWAY_URL}}"],
+					"path": ["health"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "2. Gateway - GET Prometheus Metrics (/metrics)",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{GATEWAY_URL}}/metrics",
+					"host": ["{{GATEWAY_URL}}"],
+					"path": ["metrics"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "3. Gateway - GET All Users",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{GATEWAY_URL}}/users",
+					"host": ["{{GATEWAY_URL}}"],
+					"path": ["users"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "4. Gateway - POST New User",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Dev Barot\",\n  \"email\": \"devbarot@gmail.com\",\n  \"role\": \"student\"\n}"
+				},
+				"url": {
+					"raw": "{{GATEWAY_URL}}/users",
+					"host": ["{{GATEWAY_URL}}"],
+					"path": ["users"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "5. Gateway - GET All Products",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{GATEWAY_URL}}/products",
+					"host": ["{{GATEWAY_URL}}"],
+					"path": ["products"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "6. Gateway - POST New Product",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"name\": \"Mechanical Keyboard\",\n  \"price\": 89.99,\n  \"category\": \"Peripherals\"\n}"
+				},
+				"url": {
+					"raw": "{{GATEWAY_URL}}/products",
+					"host": ["{{GATEWAY_URL}}"],
+					"path": ["products"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "7. Gateway - GET All Orders",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{GATEWAY_URL}}/orders",
+					"host": ["{{GATEWAY_URL}}"],
+					"path": ["orders"]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "8. Gateway - POST New Order",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"userId\": \"670000000000000000000001\",\n  \"productId\": \"670000000000000000000002\",\n  \"quantity\": 2\n}"
+				},
+				"url": {
+					"raw": "{{GATEWAY_URL}}/orders",
+					"host": ["{{GATEWAY_URL}}"],
+					"path": ["orders"]
+				}
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "GATEWAY_URL",
+			"value": "http://localhost:8080"
+		}
+	]
+}
