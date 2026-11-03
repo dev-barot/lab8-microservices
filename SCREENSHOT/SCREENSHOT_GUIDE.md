@@ -3,6 +3,8 @@
 This guide details each of the 13 required pieces of evidence for the Lab 8 submission, along with the exact commands and screens to capture.
 
 | No. | File Name | Deliverable | What to Capture |
+
+
 |---|---|---|---|
 | **1** | `01-lab7-baseline.png` | Lab 7 baseline | Postman screenshot showing a successful request (`GET /health` or `GET /users`) and response through the gateway. |
 | **2** | `02-k8s-environment.png` | Kubernetes environment | Terminal output showing `kubectl config current-context` and `kubectl get nodes` with at least one Ready node. |

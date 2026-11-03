@@ -1,0 +1,40 @@
+Exercise 9 — Prometheus Scrape and Query (Lab 8)
+THESE ARE THE CHANGES DONE TO COMPLETE THIS EXERCISE ON TOP OF EXISTING LAB - 8
+---
+
+1. Minimal Scrape Target (`prometheus.yml`)
+
+Added this job under `scrape_configs` to scrape the gateway on port `8080`:
+
+```yaml
+scrape_configs:
+  - job_name: "gateway"
+    metrics_path: /metrics
+    static_configs:
+      - targets: ["gateway-service:8080"]
+```
+
+---
+
+2. Query to Check Target Availability
+
+```promql
+up{job="gateway"}
+```
+
+- Result: Returns `1` if Prometheus can reach and scrape the gateway endpoint, and `0` if the target is DOWN or unreachable.
+
+---
+
+3. Two Useful Application Metrics & Role of Postman Traffic
+
+1. `http_requests_total` (Counter)
+   - Tracks total incoming HTTP requests, categorized by HTTP method, route, and response status code.
+   - Used to calculate request rate: `rate(http_requests_total[1m])`.
+
+2. `http_request_duration_seconds` (Histogram)
+   - Measures end-to-end request processing time and latency distribution across endpoints.
+
+How Postman Traffic Helps:
+- Baseline vs. Active Comparison: In an idle system, metrics remain flat or return zero rates. Firing requests (GET, POST, invalid routes) from Postman immediately increments counters, fills latency buckets, and generates distinct HTTP status codes (e.g., `200`, `201`, `404`, `503`).
+- End-to-End Validation: It proves that Prometheus scrapes live, dynamic application behavior rather than stale state, causing observable spikes in Prometheus graphs and Grafana panels.

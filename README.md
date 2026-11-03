@@ -350,3 +350,32 @@ Observe the live spike in Prometheus and Grafana dashboards!
 | ☐ Grafana dashboard created | 4-panel dashboard in Grafana UI | `SCREENSHOT/11-grafana-dashboard.png` |
 | ☐ API traffic generated and observed | Spiking graphs after Postman requests | `SCREENSHOT/12-traffic-observation.png` |
 | ☐ Architecture diagram complete | System topology & monitoring flow | `SCREENSHOT/13-architecture-diagram.png` |
+
+---
+
+## 11. Exercise 9 — Prometheus Scrape and Query (Lab 8)
+
+### 11.1 Minimal Scrape Target (`prometheus.yml` / `k8s/monitoring/prometheus-configmap.yaml`)
+To scrape metrics from `gateway-service:8080` where metrics are exposed at `/metrics`:
+```yaml
+scrape_configs:
+  - job_name: "gateway"
+    metrics_path: /metrics
+    static_configs:
+      - targets: ["gateway-service:8080"]
+```
+
+### 11.2 Target Availability Query
+```promql
+up{job="gateway"}
+```
+- **Evaluation:** Evaluates to `1` when the target is reachable and healthy (UP), or `0` if the target is down/unreachable.
+
+### 11.3 Two Useful Application Metrics & Postman Traffic Role
+1. **`http_requests_total`** (Counter): Measures total incoming HTTP requests partitioned by `method`, `route`, and `status_code`. Enables calculating real-time request rates via `rate(http_requests_total[1m])`.
+2. **`http_request_duration_seconds`** (Histogram): Tracks request latency and duration distributions across routes.
+
+#### How Postman Traffic Helps:
+- **Populating Real Data:** Without traffic, counters remain stationary and rate calculations evaluate to zero. Sending Postman requests triggers active increments, measures real request durations, and generates diverse HTTP status codes (`200 OK`, `201 Created`, `404 Not Found`).
+- **Verifying Observability Pipelines:** Dynamic traffic creates observable spikes in Prometheus queries and Grafana panels, validating that the monitoring stack accurately captures live system behavior.
+
